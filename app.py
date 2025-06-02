@@ -189,8 +189,8 @@ elif mode == "Physics Formula Solver":
         st.session_state["history"] = []
 
     physics_formulas = {
-        "Newton’s Second Law": "F = m * a",
-        "Ohm’s Law": "V = I * R",
+        "Newton's Second Law": "F = m * a",
+        "Ohm's Law": "V = I * R",
         "Kinetic Energy": "KE = 0.5 * m * v**2",
         "Gravitational Potential Energy": "PE = m * g * h",
         "Pressure": "P = F / A",
@@ -269,9 +269,9 @@ engineering_conversions = {
             "μA": 1e-6
         },
         "Resistance": {
-            "Ω": 1,
-            "kΩ": 1e3,
-            "MΩ": 1e6
+            "Ω": 1,
+            "kΩ": 1e3,
+            "MΩ": 1e6
         },
         "Capacitance": {
             "F": 1,
