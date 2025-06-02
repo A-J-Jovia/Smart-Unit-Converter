@@ -327,7 +327,7 @@ engineering_conversions = {
 }
 
 # ------------------ ENGINEERING CONVERTER ------------------ #
-mode = st.radio("Choose Mode", ["Engineering Converter", "Physics Formula Solver"], key="main_mode")
+mode = st.radio("Choose Mode", ["Engineering Converter"], key="main_mode")
 
 if "history" not in st.session_state:
     st.session_state["history"] = []
