@@ -127,12 +127,11 @@ if "history" not in st.session_state:
 st.set_page_config(page_title="Smart Unit Converter & Calculator", page_icon="🔢")
 st.title("🔢 Smart Unit Converter & Multi-Mode Calculator")
 
-st.sidebar.header("Choose Mode")
 mode = st.sidebar.radio("Select Mode", [
     "Unit Converter", "Formula Calculator",
     "Scientific Calculator", "Physics Formula Solver",
     "Engineering Converter", "Health & Fitness Tools",
-    "Conversion History & Bookmarks"  # <-- Chemical Calculator removed
+    "Conversion History & Bookmarks"
 ])
 
 # ------------------ UNIT CONVERTER UI ------------------ #
