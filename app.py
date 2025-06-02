@@ -89,6 +89,21 @@ unit_conversions = {
     }
 }
 
+# Engineering specific conversions
+engineering_conversions = {
+    "Mechanical": {
+        "Torque (Nm-lb-ft)": {"Nm": 1, "lb-ft": 1.35582},
+        "Stress (Pa-psi)": {"Pa": 1, "psi": 6894.76}
+    },
+    "Electrical": {
+        "Power (W-kW-HP)": {"W": 1, "kW": 1000, "HP": 745.7}
+    },
+    "HVAC": {
+        "Energy (BTU-kWh)": {"BTU": 1055.06, "kWh": 3.6e6},
+        "Airflow (CFM-L/s)": {"CFM": 0.471947, "L/s": 1}
+    }
+}
+
 # ------------------ UNIT CONVERSION FUNCTION ------------------ #
 def convert_units(value, from_unit, to_unit, unit_type):
     if unit_type == 'Temperature':
@@ -184,169 +199,51 @@ elif mode == "Scientific Calculator":
 # ------------------ PHYSICS FORMULA SOLVER ------------------ #
 elif mode == "Physics Formula Solver":
     st.header("⚛️ Physics Formula Solver")
-
-    if "history" not in st.session_state:
-        st.session_state["history"] = []
-
     physics_formulas = {
-        "Newton's Second Law": "F = m * a",
-        "Ohm's Law": "V = I * R",
+        "Newton’s Second Law": "F = m * a",
+        "Ohm’s Law": "V = I * R",
         "Kinetic Energy": "KE = 0.5 * m * v**2",
         "Gravitational Potential Energy": "PE = m * g * h",
-        "Pressure": "P = F / A",
-        "Work Done": "W = F * d",
-        "Power": "P = W / t",
-        "Momentum": "p = m * v",
-        "Hooke's Law": "F = k * x",
-        "Charge": "Q = I * t",
-        "Coulomb's Law": "F = k * q1 * q2 / r**2",
-        "Wave Speed": "v = f * λ",
-        "Refractive Index": "n = c / v",
-        "Ideal Gas Law": "P * V = n * R * T",
-        "Einstein's Mass-Energy": "E = m * c**2",
+        "Pressure": "P = F / A"
     }
 
-    choice = st.selectbox("Choose a Formula", list(physics_formulas.keys()))
+    choice = st.selectbox("Choose Formula", list(physics_formulas.keys()))
     formula = physics_formulas[choice]
     st.latex(formula)
 
-    # Split formula and get symbolic variables
     lhs, rhs = formula.split("=")
-    lhs = lhs.strip()
-    rhs = rhs.strip()
-
-    try:
-        expr = sp.sympify(rhs, evaluate=False)
-    except Exception as e:
-        st.error(f"Could not parse formula: {e}")
-        st.stop()
-
-    variables = list(expr.free_symbols)
+    expr = sp.sympify(rhs.strip())
+    variables = expr.free_symbols
     inputs = {}
 
-    # Ask user for input
     for var in variables:
-        val = st.number_input(f"Enter value for {var}", format="%.4f")
-        inputs[var] = val
+        inputs[var] = st.number_input(f"Enter value for {var}", format="%.4f")
 
     if st.button("Solve"):
         try:
             result = expr.subs(inputs).evalf()
-            st.success(f"{lhs} = {result:.4f}")
-            st.session_state["history"].append(("Physics Formula Solver", formula, f"{lhs} = {result:.4f}"))
+            st.success(f"{lhs.strip()} = {result:.4f}")
+            st.session_state["history"].append(("Physics Formula Solver", formula, f"{lhs.strip()} = {result:.4f}"))
         except Exception as e:
-            st.error(f"Error in calculation: {e}")
-
-# ------------------ ENGINEERING CONVERSIONS DICTIONARY ------------------ #
-engineering_conversions = {
-    "Mechanical": {
-        "Force": {
-            "N": 1,
-            "kN": 1e3,
-            "lbf": 4.44822
-        },
-        "Torque": {
-            "Nm": 1,
-            "kNm": 1e3,
-            "lbf·ft": 1.35582
-        },
-        "Pressure": {
-            "Pa": 1,
-            "kPa": 1e3,
-            "MPa": 1e6,
-            "psi": 6894.76,
-            "bar": 1e5
-        }
-    },
-    "Electrical": {
-        "Voltage": {
-            "V": 1,
-            "kV": 1e3
-        },
-        "Current": {
-            "A": 1,
-            "mA": 1e-3,
-            "μA": 1e-6
-        },
-        "Resistance": {
-            "Ω": 1,
-            "kΩ": 1e3,
-            "MΩ": 1e6
-        },
-        "Capacitance": {
-            "F": 1,
-            "μF": 1e-6,
-            "nF": 1e-9,
-            "pF": 1e-12
-        }
-    },
-    "Thermal": {
-        "Energy": {
-            "J": 1,
-            "kJ": 1e3,
-            "cal": 4.184,
-            "BTU": 1055.06
-        },
-        "Power": {
-            "W": 1,
-            "kW": 1e3,
-            "HP": 745.7
-        }
-    },
-    "Fluid Mechanics": {
-        "Flow Rate": {
-            "m³/s": 1,
-            "L/min": 1/60000,
-            "GPM": 6.309e-5
-        },
-        "Viscosity": {
-            "Pa·s": 1,
-            "cP": 0.001
-        }
-    },
-    "Civil": {
-        "Length": {
-            "m": 1,
-            "cm": 0.01,
-            "mm": 0.001,
-            "in": 0.0254,
-            "ft": 0.3048
-        },
-        "Area": {
-            "m²": 1,
-            "cm²": 0.0001,
-            "in²": 0.00064516,
-            "ft²": 0.092903
-        },
-        "Volume": {
-            "m³": 1,
-            "L": 0.001,
-            "ft³": 0.0283168
-        }
-    }
-}
+            st.error(f"Error: {e}")
 
 # ------------------ ENGINEERING CONVERTER ------------------ #
 elif mode == "Engineering Converter":
-    if "history" not in st.session_state:
-        st.session_state["history"] = []
-
     st.header("🏗️ Engineering Converter")
-    category = st.selectbox("Select Category", list(engineering_conversions.keys()), key="eng_cat")
-    conversion_type = st.selectbox("Select Conversion Type", list(engineering_conversions[category].keys()), key="eng_type")
-    unit_dict = engineering_conversions[category][conversion_type]
-    units = list(unit_dict.keys())
+    cat = st.selectbox("Select Category", list(engineering_conversions.keys()))
+    conv = st.selectbox("Conversion Type", list(engineering_conversions[cat].keys()))
+    units = list(engineering_conversions[cat][conv].keys())
 
-    val = st.number_input("Enter value", key="eng_value")
-    from_unit = st.selectbox("From Unit", units, key="eng_from_unit")
-    to_unit = st.selectbox("To Unit", units, key="eng_to_unit")
+    val = st.number_input("Enter value")
+    from_u = st.selectbox("From Unit", units, key="eng_from")
+    to_u = st.selectbox("To Unit", units, key="eng_to")
 
     if st.button("Convert", key="eng_convert"):
         try:
-            base_value = val * unit_dict[from_unit]
-            result = base_value / unit_dict[to_unit]
-            st.success(f"{val} {from_unit} = {result:.4f} {to_unit}")
-            st.session_state["history"].append(("Engineering Converter", f"{val} {from_unit}", f"{result:.4f} {to_unit}"))
+            base = val * engineering_conversions[cat][conv][from_u]
+            res = base / engineering_conversions[cat][conv][to_u]
+            st.success(f"{val} {from_u} = {res:.4f} {to_u}")
+            st.session_state["history"].append(("Engineering Converter", f"{val} {from_u}", f"{res:.4f} {to_u}"))
         except Exception as e:
             st.error(f"Conversion error: {e}")
 
