@@ -306,38 +306,6 @@ elif mode == "Health & Fitness Tools":
             else:
                 st.error("Height must be greater than 0")
 
-# ------------------ CHEMICAL CALCULATOR ------------------ #
-elif mode == "Chemical Calculator":
-    st.header("🧪 Chemical Calculator")
-    choice = st.selectbox("Choose Tool", ["Molar Mass (basic)", "Dilution", "pH / pOH", "Gas Law (PV=nRT)"])
-
-    if choice == "pH / pOH":
-        h_conc = st.number_input("[H+] Concentration (mol/L)", min_value=0.0, format="%.6f")
-        if st.button("Calculate pH / pOH"):
-            if h_conc > 0:
-                pH = -log10(h_conc)
-                pOH = 14 - pH
-                st.success(f"pH = {pH:.2f}, pOH = {pOH:.2f}")
-                st.session_state["history"].append(("Chemical Calculator", f"[H+]={h_conc}", f"pH={pH:.2f}, pOH={pOH:.2f}"))
-            else:
-                st.error("Concentration must be greater than 0")
-
-    elif choice == "Gas Law (PV=nRT)":
-        P = st.number_input("Pressure (atm)", format="%.4f")
-        V = st.number_input("Volume (L)", format="%.4f")
-        n = st.number_input("Moles (mol)", format="%.4f")
-        R = 0.0821
-        if st.button("Calculate Temperature (K)"):
-            if P > 0 and V > 0 and n > 0:
-                T = (P * V) / (n * R)
-                st.success(f"T = {T:.2f} K")
-                st.session_state["history"].append(("Chemical Calculator", f"P={P} atm, V={V} L, n={n} mol", f"T={T:.2f} K"))
-            else:
-                st.error("Pressure, Volume, and Moles must be > 0")
-
-    else:
-        st.info("More tools coming soon!")
-
 # ------------------ CONVERSION HISTORY & BOOKMARKS ------------------ #
 elif mode == "Conversion History & Bookmarks":
     st.header("📜 Conversion History & Bookmarks")
