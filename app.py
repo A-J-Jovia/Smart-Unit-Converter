@@ -327,27 +327,28 @@ engineering_conversions = {
 }
 
 # ------------------ ENGINEERING CONVERTER ------------------ #
-if "history" not in st.session_state:
-    st.session_state["history"] = []
+elif mode == "Engineering Converter":
+    if "history" not in st.session_state:
+        st.session_state["history"] = []
 
-st.header("🏗️ Engineering Converter")
-category = st.selectbox("Select Category", list(engineering_conversions.keys()), key="eng_cat")
-conversion_type = st.selectbox("Select Conversion Type", list(engineering_conversions[category].keys()), key="eng_type")
-unit_dict = engineering_conversions[category][conversion_type]
-units = list(unit_dict.keys())
+    st.header("🏗️ Engineering Converter")
+    category = st.selectbox("Select Category", list(engineering_conversions.keys()), key="eng_cat")
+    conversion_type = st.selectbox("Select Conversion Type", list(engineering_conversions[category].keys()), key="eng_type")
+    unit_dict = engineering_conversions[category][conversion_type]
+    units = list(unit_dict.keys())
 
-val = st.number_input("Enter value", key="eng_value")
-from_unit = st.selectbox("From Unit", units, key="eng_from_unit")
-to_unit = st.selectbox("To Unit", units, key="eng_to_unit")
+    val = st.number_input("Enter value", key="eng_value")
+    from_unit = st.selectbox("From Unit", units, key="eng_from_unit")
+    to_unit = st.selectbox("To Unit", units, key="eng_to_unit")
 
-if st.button("Convert", key="eng_convert"):
-    try:
-        base_value = val * unit_dict[from_unit]
-        result = base_value / unit_dict[to_unit]
-        st.success(f"{val} {from_unit} = {result:.4f} {to_unit}")
-        st.session_state["history"].append(("Engineering Converter", f"{val} {from_unit}", f"{result:.4f} {to_unit}"))
-    except Exception as e:
-        st.error(f"Conversion error: {e}")
+    if st.button("Convert", key="eng_convert"):
+        try:
+            base_value = val * unit_dict[from_unit]
+            result = base_value / unit_dict[to_unit]
+            st.success(f"{val} {from_unit} = {result:.4f} {to_unit}")
+            st.session_state["history"].append(("Engineering Converter", f"{val} {from_unit}", f"{result:.4f} {to_unit}"))
+        except Exception as e:
+            st.error(f"Conversion error: {e}")
 
 # ------------------ HEALTH & FITNESS TOOLS ------------------ #
 elif mode == "Health & Fitness Tools":
