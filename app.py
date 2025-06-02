@@ -199,33 +199,58 @@ elif mode == "Scientific Calculator":
 # ------------------ PHYSICS FORMULA SOLVER ------------------ #
 elif mode == "Physics Formula Solver":
     st.header("⚛️ Physics Formula Solver")
+
+    if "history" not in st.session_state:
+        st.session_state["history"] = []
+
     physics_formulas = {
         "Newton’s Second Law": "F = m * a",
         "Ohm’s Law": "V = I * R",
         "Kinetic Energy": "KE = 0.5 * m * v**2",
         "Gravitational Potential Energy": "PE = m * g * h",
-        "Pressure": "P = F / A"
+        "Pressure": "P = F / A",
+        "Work Done": "W = F * d",
+        "Power": "P = W / t",
+        "Momentum": "p = m * v",
+        "Hooke's Law": "F = k * x",
+        "Charge": "Q = I * t",
+        "Coulomb's Law": "F = k * q1 * q2 / r**2",
+        "Wave Speed": "v = f * λ",
+        "Refractive Index": "n = c / v",
+        "Ideal Gas Law": "P * V = n * R * T",
+        "Einstein's Mass-Energy": "E = m * c**2",
     }
 
-    choice = st.selectbox("Choose Formula", list(physics_formulas.keys()))
+    choice = st.selectbox("Choose a Formula", list(physics_formulas.keys()))
     formula = physics_formulas[choice]
     st.latex(formula)
 
+    # Split formula and get symbolic variables
     lhs, rhs = formula.split("=")
-    expr = sp.sympify(rhs.strip())
-    variables = expr.free_symbols
+    lhs = lhs.strip()
+    rhs = rhs.strip()
+
+    try:
+        expr = sp.sympify(rhs, evaluate=False)
+    except Exception as e:
+        st.error(f"Could not parse formula: {e}")
+        st.stop()
+
+    variables = list(expr.free_symbols)
     inputs = {}
 
+    # Ask user for input
     for var in variables:
-        inputs[var] = st.number_input(f"Enter value for {var}", format="%.4f")
+        val = st.number_input(f"Enter value for {var}", format="%.4f")
+        inputs[var] = val
 
     if st.button("Solve"):
         try:
             result = expr.subs(inputs).evalf()
-            st.success(f"{lhs.strip()} = {result:.4f}")
-            st.session_state["history"].append(("Physics Formula Solver", formula, f"{lhs.strip()} = {result:.4f}"))
+            st.success(f"{lhs} = {result:.4f}")
+            st.session_state["history"].append(("Physics Formula Solver", formula, f"{lhs} = {result:.4f}"))
         except Exception as e:
-            st.error(f"Error: {e}")
+            st.error(f"Error in calculation: {e}")
 
 # ------------------ ENGINEERING CONVERTER ------------------ #
 elif mode == "Engineering Converter":
