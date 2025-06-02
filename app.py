@@ -132,7 +132,7 @@ mode = st.sidebar.radio("Select Mode", [
     "Unit Converter", "Formula Calculator",
     "Scientific Calculator", "Physics Formula Solver",
     "Engineering Converter", "Health & Fitness Tools",
-    "Chemical Calculator", "Conversion History & Bookmarks"
+    "Conversion History & Bookmarks"  # <-- Chemical Calculator removed
 ])
 
 # ------------------ UNIT CONVERTER UI ------------------ #
